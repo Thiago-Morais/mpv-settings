@@ -1,0 +1,3 @@
+[submodule "scripts/celebi"]
+	path = scripts/celebi
+	url = git@github.com:po5/celebi.git
