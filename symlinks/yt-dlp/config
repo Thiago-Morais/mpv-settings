@@ -1,0 +1,8 @@
+--cookies-from-browser firefox:"fii5rp1a.Default (release)"
+--mark-watched
+--sponsorblock-mark all
+--sponsorblock-remove sponsor,selfpromo,interaction,intro,outro
+
+# -f bv*+ba/b[height<=?1600]
+-S height:1600
+--yes-playlist
