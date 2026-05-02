@@ -2,8 +2,6 @@ local utils = require("mp.utils")
 local msg = require("mp.msg")
 local options = require("mp.options")
 
-msg.debug("Test string 0")
-
 local o = {
 	exclude = "",
 	include = "^%w+%.youtube%.com/|^youtube%.com/|^youtu%.be/|^%w+%.twitch%.tv/|^twitch%.tv/",
@@ -660,8 +658,6 @@ local function formats_to_edl(json, formats, use_all_formats)
 end
 
 local function add_single_video(json)
-	msg.debug("test string running add_single_video")
-
 	local streamurl = ""
 	local format_info = ""
 	local max_bitrate = 0
@@ -822,25 +818,7 @@ local function add_single_video(json)
 		end
 	end
 
-	-- -- add chapters
-	-- if json.chapters then
-	--     msg.debug("Adding pre-parsed chapters")
-	--     chapter_list = {}
-	--     for i = 1, #json.chapters do
-	--         local chapter = json.chapters[i]
-	--         local title = chapter.title or ""
-	--         if title == "" then
-	--             title = string.format('Chapter %02d', i)
-	--         end
-	--         table.insert(chapter_list, {time=chapter.start_time, title=title})
-	--     end
-	-- end
-
 	-- add chapters
-
-	msg.debug("test string trying to import chapters")
-	msg.debug("test string json.chapters=" .. tostring(json.chapters))
-	msg.debug("test string json.sponsorblock_chapters=" .. tostring(json.sponsorblock_chapters))
 
 	local chapters = json.chapters or json.sponsorblock_chapters
 	if chapters then
@@ -920,7 +898,6 @@ local function add_single_video(json)
 end
 
 local function run_ytdl_hook(url)
-	msg.debug("test string running run_ytdl_hook")
 	local start_time = os.clock()
 
 	-- strip ytdl://
@@ -999,27 +976,18 @@ local function run_ytdl_hook(url)
 			local ytdl_cmd = mp.find_config_file(path .. exesuf)
 			if ytdl_cmd then
 				msg.verbose("Found youtube-dl at: " .. ytdl_cmd)
-				msg.debug("test string 0 ytdl_cmd=" .. tostring(ytdl_cmd))
 				ytdl.path = ytdl_cmd
 				command[1] = ytdl.path
-				msg.debug("test string 0 command[1]=" .. tostring(command[1]))
-				msg.debug("test string 0 command=" .. tostring(command))
 				for key, value in pairs(command) do
-					msg.debug("test string 0 command[" .. key .. "]=" .. tostring(value))
 				end
 				result = exec(command)
-				msg.debug("test string 0 result=" .. tostring(result))
 				break
 			else
 				msg.verbose("No youtube-dl found with path " .. path .. exesuf .. " in config directories")
 				command[1] = path
-				msg.debug("test string 1 command[1]=" .. tostring(command[1]))
-				msg.debug("test string 1 command=" .. tostring(command))
 				for key, value in pairs(command) do
-					msg.debug("test string 1 command[" .. key .. "]=" .. tostring(value))
 				end
 				result = exec(command)
-				msg.debug("test string 1 result=" .. tostring(result))
 				if result.error_string == "init" then
 					msg.verbose("youtube-dl with path " .. path .. " not found in PATH or not enough permissions")
 				else
@@ -1078,12 +1046,10 @@ local function run_ytdl_hook(url)
 
 	-- what did we get?
 	if json["direct"] then
-		msg.debug("test string 1")
 		-- direct URL, nothing to do
 		msg.verbose("Got direct URL")
 		return
 	elseif json["_type"] == "playlist" or json["_type"] == "multi_video" then
-		msg.debug("test string 2")
 		-- a playlist
 
 		if #json.entries == 0 then
@@ -1209,7 +1175,6 @@ local function run_ytdl_hook(url)
 		end
 	else -- probably a video
 		-- add playlist metadata if any belongs to the current video
-		msg.debug("test string 3")
 		for key, value in pairs(playlist_metadata[mp.get_property("playlist-path")] or {}) do
 			json[key] = value
 		end
@@ -1220,22 +1185,13 @@ local function run_ytdl_hook(url)
 end
 
 local function on_load_hook(load_fail)
-	msg.debug("test string running on_load_hook")
 	local url = mp.get_property("stream-open-filename", "")
-	msg.debug("test string url='" .. tostring(url) .. "'")
 	local force = url:find("^ytdl://") ~= nil
-	msg.debug("test string force='" .. tostring(force) .. "'")
 	local early = force or o.try_ytdl_first or is_whitelisted(url)
-	msg.debug("test string o.try_ytdl_first='" .. tostring(o.try_ytdl_first) .. "'")
-	msg.debug("test string is_whitelisted(url)='" .. tostring(is_whitelisted(url)) .. "'")
-	msg.debug("test string early='" .. tostring(early) .. "'")
-	msg.debug("test string load_fail='" .. tostring(load_fail) .. "'")
 	if early == load_fail then
-		msg.debug("test string return 0'")
 		return
 	end
 	if not force and (not url:find("^https?://") or is_blacklisted(url)) then
-		msg.debug("test string return 1'")
 		return
 	end
 	run_ytdl_hook(url)
