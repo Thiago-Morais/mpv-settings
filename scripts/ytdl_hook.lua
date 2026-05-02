@@ -818,20 +818,61 @@ local function add_single_video(json)
 		end
 	end
 
-	-- add chapters
 
-	local chapters = json.chapters or json.sponsorblock_chapters
-	if chapters then
+	chapter_list = {}
+
+	-- add normal chapters
+	if json.chapters then
 		msg.debug("Adding pre-parsed chapters")
-		chapter_list = {}
-		for i = 1, #chapters do
-			local chapter = chapters[i]
+		for i = 1, #json.chapters do
+			local chapter = json.chapters[i]
 			local title = chapter.title or ""
 			if title == "" then
 				title = string.format("Chapter %02d", i)
 			end
 			table.insert(chapter_list, { time = chapter.start_time, title = title })
 		end
+	end
+
+	-- add sponsorblock chapters
+	local time_window = 1
+	local sponsorblock_chapters = json.sponsorblock_chapters
+	if sponsorblock_chapters then
+		msg.debug("Adding pre-parsed sponsorblock chapters")
+		for i = 1, #sponsorblock_chapters do
+			local chapter = sponsorblock_chapters[i]
+			local title = chapter.title or string.format("Chapter %02d", i)
+			local chapter_time_is_free_for_start_time = true
+			local chapter_time_is_free_for_end_time = true
+			for key, value in pairs(chapter_list) do
+				local time = value.time
+				local start_time_conflict = time - time_window <= chapter.start_time
+					and chapter.start_time <= time + time_window
+				local end_time_conflict = time - time_window <= chapter.end_time
+					and chapter.end_time <= time + time_window
+
+				if start_time_conflict then
+					chapter_time_is_free_for_start_time = false
+					value.title = value.title .. " + " .. title .. " (start)"
+				end
+				if end_time_conflict then
+					chapter_time_is_free_for_end_time = false
+					value.title = value.title .. " + " .. title .. " (end)"
+				end
+				if not chapter_time_is_free_for_start_time or not chapter_time_is_free_for_end_time then
+					break
+				end
+			end
+			if chapter_time_is_free_for_start_time then
+				table.insert(chapter_list, { time = chapter.start_time, title = title .. " (start)" })
+			end
+			if chapter_time_is_free_for_end_time then
+				table.insert(chapter_list, { time = chapter.end_time, title = title .. " (end)" })
+			end
+		end
+		table.sort(chapter_list, function(a, b)
+			return a.time < b.time
+		end)
 	end
 
 	-- set start time
