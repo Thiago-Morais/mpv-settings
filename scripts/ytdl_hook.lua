@@ -818,7 +818,6 @@ local function add_single_video(json)
 		end
 	end
 
-
 	chapter_list = {}
 
 	-- add normal chapters
@@ -835,38 +834,31 @@ local function add_single_video(json)
 	end
 
 	-- add sponsorblock chapters
-	local time_window = 1
 	local sponsorblock_chapters = json.sponsorblock_chapters
 	if sponsorblock_chapters then
 		msg.debug("Adding pre-parsed sponsorblock chapters")
+		local seconds_range = 1
+		local function get_chapter_near(time)
+			for _, value in pairs(chapter_list) do
+				local is_near = value.time - seconds_range <= time and time <= value.time + seconds_range
+				if is_near then
+					return value
+				end
+			end
+		end
 		for i = 1, #sponsorblock_chapters do
 			local chapter = sponsorblock_chapters[i]
 			local title = chapter.title or string.format("Chapter %02d", i)
-			local chapter_time_is_free_for_start_time = true
-			local chapter_time_is_free_for_end_time = true
-			for key, value in pairs(chapter_list) do
-				local time = value.time
-				local start_time_conflict = time - time_window <= chapter.start_time
-					and chapter.start_time <= time + time_window
-				local end_time_conflict = time - time_window <= chapter.end_time
-					and chapter.end_time <= time + time_window
-
-				if start_time_conflict then
-					chapter_time_is_free_for_start_time = false
-					value.title = value.title .. " + " .. title .. " (start)"
-				end
-				if end_time_conflict then
-					chapter_time_is_free_for_end_time = false
-					value.title = value.title .. " + " .. title .. " (end)"
-				end
-				if not chapter_time_is_free_for_start_time or not chapter_time_is_free_for_end_time then
-					break
-				end
-			end
-			if chapter_time_is_free_for_start_time then
+			local chapter_near_start = get_chapter_near(chapter.start_time)
+			if chapter_near_start then
+				chapter_near_start.title = chapter_near_start.title .. " + " .. title .. " (start)"
+			else
 				table.insert(chapter_list, { time = chapter.start_time, title = title .. " (start)" })
 			end
-			if chapter_time_is_free_for_end_time then
+			local chapter_near_end = get_chapter_near(chapter.end_time)
+			if chapter_near_end then
+				chapter_near_end.title = chapter_near_end.title .. " + " .. title .. " (end)"
+			else
 				table.insert(chapter_list, { time = chapter.end_time, title = title .. " (end)" })
 			end
 		end
