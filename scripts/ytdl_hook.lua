@@ -837,29 +837,29 @@ local function add_single_video(json)
 	local sponsorblock_chapters = json.sponsorblock_chapters
 	if sponsorblock_chapters then
 		msg.debug("Adding pre-parsed sponsorblock chapters")
-		local seconds_range = 1
-		local function get_chapter_near(time)
-			for _, value in pairs(chapter_list) do
-				local is_near = value.time - seconds_range <= time and time <= value.time + seconds_range
-				if is_near then
-					return value
+		local function get_chapter_near_time(target_time, tolerance)
+			tolerance = tolerance or 1
+			for _, chapter in pairs(chapter_list) do
+				local is_around = target_time - tolerance <= chapter.time and chapter.time <= target_time + tolerance
+				if is_around then
+					return chapter
 				end
 			end
 		end
 		for i = 1, #sponsorblock_chapters do
-			local chapter = sponsorblock_chapters[i]
-			local title = chapter.title or string.format("Chapter %02d", i)
-			local chapter_near_start = get_chapter_near(chapter.start_time)
-			if chapter_near_start then
-				chapter_near_start.title = chapter_near_start.title .. " + " .. title .. " (start)"
+			local sb_chapter = sponsorblock_chapters[i]
+			local sb_title = sb_chapter.title or string.format("Chapter %02d", i)
+			local chapter_near_sb_start = get_chapter_near_time(sb_chapter.start_time)
+			if chapter_near_sb_start then
+				chapter_near_sb_start.title = ("%s + %s (start)"):format(chapter_near_sb_start.title, sb_title)
 			else
-				table.insert(chapter_list, { time = chapter.start_time, title = title .. " (start)" })
+				table.insert(chapter_list, { time = sb_chapter.start_time, title = sb_title .. " (start)" })
 			end
-			local chapter_near_end = get_chapter_near(chapter.end_time)
-			if chapter_near_end then
-				chapter_near_end.title = chapter_near_end.title .. " + " .. title .. " (end)"
+			local chapter_near_sb_end = get_chapter_near_time(sb_chapter.end_time)
+			if chapter_near_sb_end then
+				chapter_near_sb_end.title = ("%s + %s (end)"):format(chapter_near_sb_end.title, sb_title)
 			else
-				table.insert(chapter_list, { time = chapter.end_time, title = title .. " (end)" })
+				table.insert(chapter_list, { time = sb_chapter.end_time, title = sb_title .. " (end)" })
 			end
 		end
 		table.sort(chapter_list, function(a, b)
