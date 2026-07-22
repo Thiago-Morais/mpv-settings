@@ -1,3 +1,6 @@
 [submodule "scripts/celebi"]
 	path = scripts/celebi
 	url = git@github.com:po5/celebi.git
+[submodule "scripts/metadata-osd"]
+	path = scripts/metadata-osd
+	url = git@github.com:Thiago-Morais/metadata-osd.git
