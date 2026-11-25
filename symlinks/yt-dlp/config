@@ -1,9 +1,19 @@
 --cookies-from-browser firefox:"fii5rp1a.Default (release)"
 --mark-watched
 --sponsorblock-mark=all
+# --sponsorblock-remove sponsor,selfpromo,interaction,intro,outro
 --sponsorblock-remove sponsor,selfpromo,interaction,intro,outro
 --sponsorblock-chapter-title="[SponsorBlock]: %(category_names)l:%(start_time)s-%(end_time)s"
+# --write-thumbnail
 
-# -f bv*+ba/b[height<=?1600]
+# -f 'bv*+ba/b'
+# -f 'bv*[height<=?1440]+ba/b[height<=?1440]'
+# -f 'bv*[height<=?720]+ba/b[height<=?720]'
+# -f 'bv*[height<=?480]+ba/b[height<=?480]'
+# --no-audio-multistreams
+# --no-video-multistreams
 -S height:1440
+# -S height:720
+# -S height:480
+# -S +size,+br,+res,+fps
 --yes-playlist
