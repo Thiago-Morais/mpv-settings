@@ -4,3 +4,6 @@
 [submodule "scripts/metadata-osd"]
 	path = scripts/metadata-osd
 	url = git@github.com:Thiago-Morais/metadata-osd.git
+[submodule "scripts/mpv-playlistmanager"]
+	path = scripts/mpv-playlistmanager
+	url = git@github.com:jonniek/mpv-playlistmanager.git
