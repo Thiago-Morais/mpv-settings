@@ -18,3 +18,4 @@
 # -S +size,+br,+res,+fps
 --yes-playlist
 --extractor-args="youtube:player-client=web_embedded,web,tv"
+--paths "$HOME/Videos/yt-dlp/"
