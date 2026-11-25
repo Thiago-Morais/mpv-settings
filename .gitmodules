@@ -7,3 +7,6 @@
 [submodule "scripts/mpv-playlistmanager"]
 	path = scripts/mpv-playlistmanager
 	url = git@github.com:jonniek/mpv-playlistmanager.git
+[submodule "scripts/thumbfast"]
+	path = scripts/thumbfast
+	url = git@github.com:po5/thumbfast.git
