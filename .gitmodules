@@ -10,3 +10,7 @@
 [submodule "scripts/thumbfast"]
 	path = scripts/thumbfast
 	url = git@github.com:po5/thumbfast.git
+[submodule "scripts/vanilla-osc"]
+	path = scripts/vanilla-osc
+	url = git@github.com:po5/thumbfast.git
+	branch = vanilla-osc
