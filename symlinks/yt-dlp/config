@@ -17,3 +17,4 @@
 # -S height:480
 # -S +size,+br,+res,+fps
 --yes-playlist
+--extractor-args="youtube:player-client=web_embedded,web,tv"
