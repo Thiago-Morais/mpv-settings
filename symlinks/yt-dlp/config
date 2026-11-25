@@ -2,6 +2,7 @@
 --mark-watched
 --sponsorblock-mark=all
 --sponsorblock-remove sponsor,selfpromo,interaction,intro,outro
+--sponsorblock-chapter-title="[SponsorBlock]: %(category_names)l:%(start_time)s-%(end_time)s"
 
 # -f bv*+ba/b[height<=?1600]
 -S height:1600
